@@ -2,7 +2,7 @@ class SessionsController < ApplicationController
   def create
     data = ActiveModelSerializers::Deserialization.jsonapi_parse(params)
     Rails.logger.error params.to_yaml
-    user = User.where(full_name: data[:full_name]).first
+    user = User.where(full_name: data[:full_name]) # removed .first
     head 406 and return unless user
     if user.authenticate(data[:password])
       user.regenerate_token
