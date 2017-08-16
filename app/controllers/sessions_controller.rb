@@ -1,16 +1,22 @@
 class SessionsController < ApplicationController
+  respond_to :json, :html
+
   def create
-    data = ActiveModelSerializers::Deserialization.jsonapi_parse(params)
-    Rails.logger.error params.to_yaml
-    user = User.where(full_name: data[:full_name]) # removed .first
-    head 406 and return unless user
-    if user.authenticate(data[:password])
-      user.regenerate_token
-      render json: user, status: :created, meta: default_meta,
-             serializer: ActiveModel::Serializer::SessionSerializer and return
-    end
-    head 403
+    sign_in(full_name, password)
   end
+
+  #def create
+  #  data = ActiveModelSerializers::Deserialization.jsonapi_parse(params)
+  #  Rails.logger.error params.to_yaml
+  #  user = User.where(full_name: data[:full_name]) # .first
+  #  head 406 and return unless user
+  #  if user.authenticate(data[:password])
+  #    user.regenerate_token
+  #    render json: user, status: :created, meta: default_meta,
+  #           serializer: ActiveModel::Serializer::SessionSerializer and return
+  #  end
+  #  head 403
+  #end
 
   def destroy
     user = User.where(token: params[:id]).first

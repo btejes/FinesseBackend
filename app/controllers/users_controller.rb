@@ -48,5 +48,6 @@ class UsersController < ApplicationController
 
   def user_params
     ActiveModelSerializers::Deserialization.jsonapi_parse(params)
+
   end
 end
